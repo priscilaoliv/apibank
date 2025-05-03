@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastro de Conta Bancária</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Cadastro de Conta Bancária</h1>
+    <form id="contaForm" autocomplete="off">
+        <div class="input-group">
+          <input type="text" id="nomeCliente" placeholder="Nome do Cliente" required autocomplete="off" />
+        </div>
+        <div class="input-group">
+          <input type="text" id="contaCorrente" placeholder="Conta Corrente" required autocomplete="off" />
+        </div>
+        <div class="input-group">
+          <input type="number" id="saldo" placeholder="Saldo" required autocomplete="off" />
+        </div>
+        <button type="submit" class="submit-btn">Salvar</button>
+      </form>      
+  </div>
+
+  <script>
+    function limparCampos() {
+      document.getElementById('nomeCliente').value = '';
+      document.getElementById('contaCorrente').value = '';
+      document.getElementById('saldo').value = '';
+    }
+
+    document.getElementById('contaForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const conta = {
+        nomeCliente: document.getElementById('nomeCliente').value,
+        contaCorrente: document.getElementById('contaCorrente').value,
+        saldo: parseFloat(document.getElementById('saldo').value)
+      };
+
+      fetch('http://localhost:8080/api/contas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(conta)
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert('Conta bancária criada com sucesso!');
+        limparCampos(); // limpa após o envio
+      })
+      .catch(err => {
+        alert('Erro ao cadastrar: Conta já existe ou servidor indisponível.');
+         console.error(err);
+    })
+      .catch(err => {
+        console.error(err);
+        alert('Erro ao criar conta. Verifique o console.');
+      });
+    });
+  </script>
+</body>
+</html>
+
